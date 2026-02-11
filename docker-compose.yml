@@ -1,0 +1,29 @@
+services:
+  # Web UI mode (default): starts the full app with frontend + API
+  app:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # CLI mode: one-off summarization without the web UI
+  # Usage: docker compose run cli "https://www.youtube.com/watch?v=VIDEO_ID"
+  cli:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    entrypoint: ["python", "-m", "src.main"]
+    profiles: ["cli"]

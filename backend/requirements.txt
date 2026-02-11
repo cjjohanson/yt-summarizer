@@ -1,0 +1,8 @@
+yt-dlp
+requests
+anthropic
+openai
+fastapi
+uvicorn[standard]
+python-multipart
+aiosqlite
