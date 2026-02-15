@@ -103,6 +103,12 @@ async def list_videos(
     return {"videos": videos, "total": total, "limit": limit, "offset": offset}
 
 
+@app.get("/api/stats")
+async def get_stats():
+    """Get aggregate statistics (total time saved, etc.)."""
+    return await db.get_stats()
+
+
 @app.get("/api/videos/{video_id}")
 async def get_video(video_id: str):
     """Get full details for a single video including transcript and summaries."""
@@ -147,6 +153,7 @@ async def get_video_status(video_id: str):
         "progress_detail": video["progress_detail"],
         "title": video["title"],
         "error_message": video["error_message"],
+        "duration_seconds": video["duration_seconds"],
     }
 
 

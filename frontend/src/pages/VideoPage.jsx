@@ -3,17 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import SummaryView from '../components/SummaryView';
 import StatusBadge from '../components/StatusBadge';
 import { getVideo, deleteVideo } from '../api';
-
-function formatDuration(seconds) {
-  if (!seconds) return '';
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0) {
-    return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  }
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
+import { formatDuration, formatTimeSaved } from '../utils/format';
 
 const TABS = [
   { key: 'executive', label: 'Executive Summary' },
@@ -74,6 +64,9 @@ export default function VideoPage() {
             <span>{video.channel}</span>
             {video.duration_seconds > 0 && (
               <span>Duration: {formatDuration(video.duration_seconds)}</span>
+            )}
+            {video.status === 'completed' && video.duration_seconds > 0 && (
+              <span className="time-saved-inline">You saved {formatTimeSaved(video.duration_seconds)}</span>
             )}
             {video.upload_date && <span>Uploaded: {video.upload_date}</span>}
             <span>

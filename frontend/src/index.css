@@ -388,6 +388,11 @@ a:hover {
   margin-bottom: 16px;
 }
 
+.time-saved-inline {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
 .video-detail-actions {
   display: flex;
   gap: 8px;
@@ -612,6 +617,28 @@ a:hover {
   color: var(--color-text-secondary);
   font-size: 1.05rem;
   margin-bottom: 32px;
+}
+
+/* Time saved hero metric */
+.time-saved-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.time-saved-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-success);
+  line-height: 1.1;
+}
+
+.time-saved-label {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-top: 4px;
 }
 
 /* Section titles */

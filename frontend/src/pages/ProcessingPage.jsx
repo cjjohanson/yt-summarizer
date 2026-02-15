@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getVideoStatus } from '../api';
+import { formatTimeSaved } from '../utils/format';
 
 const STEPS = [
   { key: 'downloading', label: 'Download audio' },
@@ -44,6 +45,7 @@ export default function ProcessingPage() {
   const [status, setStatus] = useState(null);
   const [lastActiveStatus, setLastActiveStatus] = useState('downloading');
   const [error, setError] = useState('');
+  const [completedDuration, setCompletedDuration] = useState(null);
 
   useEffect(() => {
     let interval;
@@ -60,7 +62,10 @@ export default function ProcessingPage() {
 
         if (data.status === 'completed') {
           clearInterval(interval);
-          navigate(`/video/${id}`, { replace: true });
+          setCompletedDuration(data.duration_seconds || 0);
+          setTimeout(() => {
+            navigate(`/video/${id}`, { replace: true });
+          }, 3000);
         } else if (data.status === 'failed') {
           clearInterval(interval);
           setError(data.error_message || 'Processing failed.');
@@ -77,6 +82,26 @@ export default function ProcessingPage() {
   }, [id]);
 
   const currentStatus = status?.status || 'pending';
+
+  if (completedDuration !== null) {
+    const timeSaved = formatTimeSaved(completedDuration);
+    return (
+      <div className="processing-container">
+        <h2 className="processing-title">{status?.title || 'Done!'}</h2>
+        {timeSaved ? (
+          <div className="time-saved-hero">
+            <span className="time-saved-number">{timeSaved}</span>
+            <span className="time-saved-label">saved</span>
+          </div>
+        ) : (
+          <div className="time-saved-hero">
+            <span className="time-saved-number">Done!</span>
+          </div>
+        )}
+        <div className="progress-detail">Redirecting to your summary...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="processing-container">
