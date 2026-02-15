@@ -150,6 +150,20 @@ async def list_videos(status: str = None, limit: int = 50, offset: int = 0) -> t
         await db.close()
 
 
+async def get_stats() -> dict:
+    """Get aggregate statistics for completed videos."""
+    db = await get_db()
+    try:
+        cursor = await db.execute(
+            "SELECT COUNT(*) as count, COALESCE(SUM(duration_seconds), 0) as total_seconds "
+            "FROM videos WHERE status = 'completed'"
+        )
+        row = await cursor.fetchone()
+        return {"completed_count": row[0], "total_duration_seconds": row[1]}
+    finally:
+        await db.close()
+
+
 async def update_video_status(video_id: str, status: str, progress_detail: str = None):
     """Update a video's processing status."""
     db = await get_db()

@@ -2,18 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UrlInput from '../components/UrlInput';
 import VideoCard from '../components/VideoCard';
-import { submitVideo, listVideos } from '../api';
+import { submitVideo, listVideos, getStats } from '../api';
+import { formatTimeSaved } from '../utils/format';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    listVideos({ limit: 12 })
-      .then((data) => setVideos(data.videos))
+    Promise.all([
+      listVideos({ limit: 12 }),
+      getStats(),
+    ])
+      .then(([videoData, statsData]) => {
+        setVideos(videoData.videos);
+        setStats(statsData);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -40,6 +48,12 @@ export default function HomePage() {
       <div className="hero">
         <h1>YouTube Video Summarizer</h1>
         <p>Paste a YouTube URL and get a comprehensive summary in minutes.</p>
+        {stats && stats.total_duration_seconds > 0 && (
+          <div className="time-saved-hero">
+            <span className="time-saved-number">{formatTimeSaved(stats.total_duration_seconds)}</span>
+            <span className="time-saved-label">saved so far</span>
+          </div>
+        )}
         <UrlInput onSubmit={handleSubmit} loading={submitting} />
         {error && <div className="url-input-error" style={{ marginTop: 12 }}>{error}</div>}
       </div>

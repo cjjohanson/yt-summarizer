@@ -52,6 +52,10 @@ export function deleteVideo(id) {
   return request(`/videos/${id}`, { method: 'DELETE' });
 }
 
+export function getStats() {
+  return request('/stats');
+}
+
 export function searchVideos(q, limit = 20) {
   const params = new URLSearchParams({ q, limit: String(limit) });
   return request(`/search?${params}`);
