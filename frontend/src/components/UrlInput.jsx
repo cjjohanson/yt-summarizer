@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const YT_REGEX = /^https?:\/\/(www\.|m\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[A-Za-z0-9_-]+/;
+const YT_REGEX = /^https?:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|live\/|shorts\/)|youtu\.be\/)[A-Za-z0-9_-]+/;
 
 const TRANSCRIBER_OPTIONS = [
   { value: 'groq', label: 'Groq (default)' },

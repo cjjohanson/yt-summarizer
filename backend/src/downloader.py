@@ -12,10 +12,22 @@ def validate_youtube_url(url: str) -> bool:
         "https://www.youtube.com/watch?v=",
         "https://youtube.com/watch?v=",
         "https://m.youtube.com/watch?v=",
+        "https://www.youtube.com/live/",
+        "https://youtube.com/live/",
+        "https://m.youtube.com/live/",
+        "https://www.youtube.com/shorts/",
+        "https://youtube.com/shorts/",
+        "https://m.youtube.com/shorts/",
         "https://youtu.be/",
         "http://www.youtube.com/watch?v=",
         "http://youtube.com/watch?v=",
         "http://m.youtube.com/watch?v=",
+        "http://www.youtube.com/live/",
+        "http://youtube.com/live/",
+        "http://m.youtube.com/live/",
+        "http://www.youtube.com/shorts/",
+        "http://youtube.com/shorts/",
+        "http://m.youtube.com/shorts/",
         "http://youtu.be/",
     ]
     return any(url.startswith(p) for p in valid_prefixes)
@@ -25,6 +37,12 @@ def extract_video_id(url: str) -> str:
     """Extract the YouTube video ID from a URL."""
     if "youtu.be/" in url:
         path = url.split("youtu.be/")[1]
+        return path.split("?")[0].split("&")[0]
+    if "/live/" in url:
+        path = url.split("/live/")[1]
+        return path.split("?")[0].split("&")[0]
+    if "/shorts/" in url:
+        path = url.split("/shorts/")[1]
         return path.split("?")[0].split("&")[0]
     if "v=" in url:
         params = url.split("v=")[1]
