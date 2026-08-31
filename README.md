@@ -92,7 +92,7 @@ Both the web UI and CLI share the same SQLite database, so videos summarized via
 
 | Provider | Flag | Default Model |
 |----------|------|---------------|
-| **Anthropic** (default) | `--llm anthropic` | `claude-sonnet-4-20250514` |
+| **Anthropic** (default) | `--llm anthropic` | `claude-sonnet-5` |
 | OpenAI | `--llm openai` | `gpt-4o` |
 
 ### All Environment Variables

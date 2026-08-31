@@ -25,7 +25,7 @@ class Config:
         # Resolve default model based on provider
         if not self.llm_model:
             if self.llm_provider == "anthropic":
-                self.llm_model = "claude-sonnet-4-20250514"
+                self.llm_model = "claude-sonnet-5"
             else:
                 self.llm_model = "gpt-4o"
 
