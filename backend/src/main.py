@@ -37,7 +37,7 @@ def main():
     )
     parser.add_argument(
         "--model", default=None,
-        help="LLM model override (e.g., claude-sonnet-4-20250514, gpt-4o)"
+        help="LLM model override (e.g., claude-sonnet-5, gpt-4o)"
     )
     parser.add_argument(
         "--output-dir", default=None,

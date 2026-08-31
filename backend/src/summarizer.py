@@ -39,6 +39,15 @@ def _build_user_message(transcript: str, metadata: dict) -> str:
     )
 
 
+def _extract_text(response) -> str:
+    """Pull the text out of a response. Models with thinking on return a
+    thinking block first, so content[0] is not reliably the text block."""
+    for block in response.content:
+        if block.type == "text":
+            return block.text
+    raise RuntimeError("Anthropic response contained no text block.")
+
+
 class Summarizer:
     def __init__(self, config):
         self.provider = config.llm_provider
@@ -64,10 +73,10 @@ class Summarizer:
         executive_prompt = _load_prompt("executive_summary.txt")
 
         if self.provider == "anthropic":
-            detailed = self._call_anthropic(detailed_prompt, user_message, max_tokens=4096)
+            detailed = self._call_anthropic(detailed_prompt, user_message, max_tokens=16000)
             executive = self._call_anthropic(executive_prompt, user_message, max_tokens=1024)
         elif self.provider == "openai":
-            detailed = self._call_openai(detailed_prompt, user_message, max_tokens=4096)
+            detailed = self._call_openai(detailed_prompt, user_message, max_tokens=16000)
             executive = self._call_openai(executive_prompt, user_message, max_tokens=1024)
         else:
             raise ValueError(f"Unknown LLM provider: {self.provider}")
@@ -86,7 +95,7 @@ class Summarizer:
                 system=system_prompt,
                 messages=[{"role": "user", "content": user_message}],
             )
-            return response.content[0].text
+            return _extract_text(response)
         except anthropic.AuthenticationError:
             raise RuntimeError(
                 "Anthropic API authentication failed.\n"
@@ -102,7 +111,7 @@ class Summarizer:
                     system=system_prompt,
                     messages=[{"role": "user", "content": user_message}],
                 )
-                return response.content[0].text
+                return _extract_text(response)
             except anthropic.RateLimitError:
                 raise RuntimeError(
                     "Anthropic API rate limit exceeded even after retry.\n"

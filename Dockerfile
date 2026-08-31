@@ -13,6 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
+# YouTube extraction requires a JavaScript runtime to solve player challenges;
+# without one yt-dlp falls back to formats that return HTTP 403. Deno is the
+# runtime yt-dlp enables by default, and ships as a single static binary.
+COPY --from=denoland/deno:bin-2.5.5 /deno /usr/local/bin/deno
+
 WORKDIR /app
 
 COPY backend/requirements.txt .
