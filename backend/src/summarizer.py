@@ -39,6 +39,15 @@ def _build_user_message(transcript: str, metadata: dict) -> str:
     )
 
 
+def _extract_text(response) -> str:
+    """Pull the text out of a response. Models with thinking on return a
+    thinking block first, so content[0] is not reliably the text block."""
+    for block in response.content:
+        if block.type == "text":
+            return block.text
+    raise RuntimeError("Anthropic response contained no text block.")
+
+
 class Summarizer:
     def __init__(self, config):
         self.provider = config.llm_provider
@@ -86,7 +95,7 @@ class Summarizer:
                 system=system_prompt,
                 messages=[{"role": "user", "content": user_message}],
             )
-            return response.content[0].text
+            return _extract_text(response)
         except anthropic.AuthenticationError:
             raise RuntimeError(
                 "Anthropic API authentication failed.\n"
@@ -102,7 +111,7 @@ class Summarizer:
                     system=system_prompt,
                     messages=[{"role": "user", "content": user_message}],
                 )
-                return response.content[0].text
+                return _extract_text(response)
             except anthropic.RateLimitError:
                 raise RuntimeError(
                     "Anthropic API rate limit exceeded even after retry.\n"
