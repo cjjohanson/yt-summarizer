@@ -73,10 +73,10 @@ class Summarizer:
         executive_prompt = _load_prompt("executive_summary.txt")
 
         if self.provider == "anthropic":
-            detailed = self._call_anthropic(detailed_prompt, user_message, max_tokens=4096)
+            detailed = self._call_anthropic(detailed_prompt, user_message, max_tokens=16000)
             executive = self._call_anthropic(executive_prompt, user_message, max_tokens=1024)
         elif self.provider == "openai":
-            detailed = self._call_openai(detailed_prompt, user_message, max_tokens=4096)
+            detailed = self._call_openai(detailed_prompt, user_message, max_tokens=16000)
             executive = self._call_openai(executive_prompt, user_message, max_tokens=1024)
         else:
             raise ValueError(f"Unknown LLM provider: {self.provider}")
